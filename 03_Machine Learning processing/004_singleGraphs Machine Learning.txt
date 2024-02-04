@@ -1,0 +1,141 @@
+for model in allModels_coef:
+    for dataInput in all_dataInput:
+        for _colType in all_Columns:
+            _data = data_coeff [(data_coeff["Model"]==model) & 
+                                (data_coeff["data Input"]==dataInput) & 
+                                (data_coeff["columns"]==_colType)]
+            if len(_data) > 0:
+                outputDir = os.path.join(os.path.join(os.path.join(os.getcwd(), str(model)), str(dataInput)),str(_colType))
+                isExist = os.path.exists(outputDir)
+                if not isExist:
+                    os.makedirs(outputDir) 
+                for i  in _data.index.to_list():
+                    x_= list()
+                    y_= list()
+                    for _n in range(10,20):
+                        if _data.at[i,_n] != None:
+                            x_.append(_n)
+                            y_.append(_data.at[i,_n])
+                    fig, ax = plt.subplots()
+                    plt.xlabel('#No. Cycles')
+                    plt.ylabel('COEFFICIENT')
+                    plt.title('Model: '+str(model)+'\n'
+                              + 'Data input: '+ str(dataInput) + '\n'
+                              + 'Studied columns: ' + str(_colType) + '\n' 
+                              + 'Coefficient column: ' + str(_data.at[i,"COEFFICIENT"]))
+                    ax.plot(x_, y_, linewidth=2.0)
+                    fig.savefig(os.path.join(outputDir,str(_data.at[i,"COEFFICIENT"]+'.png')))
+                    #plt.show()
+                    plt.clf()
+                    plt.close()                    
+
+for model in allModels_met:
+    for dataInput in all_dataInput:
+        for _colType in all_Columns:
+            _data = data_Metrics [(data_Metrics["Model"]==model) & 
+                                (data_Metrics["data Input"]==dataInput) & 
+                                (data_Metrics["columns"]==_colType)]
+            if len(_data) > 0:
+                outputDir = os.path.join(os.path.join(os.path.join(os.getcwd(), str(model)), str(dataInput)),str(_colType))
+                isExist = os.path.exists(outputDir)
+                if not isExist:
+                    os.makedirs(outputDir)
+                
+                for _met in list_metrics:
+
+                    _aux = _data[_data["Value"]==_met]
+                    if len(_aux) > 0:
+                        x_= list()
+                        y_= list()
+                        for _n in range(10,20):
+                            x_.append(_n)
+                            y_.append(_aux[_n])   
+                                   
+                                 
+                        fig, ax = plt.subplots()
+                        plt.xlabel('#No. Cycles')
+                        plt.ylabel(str(dict_metrics[_met]))
+                        plt.title('Model: '+str(model)+'\n'
+                                  + 'Data input: '+ str(dataInput) + '\n'
+                                  + 'Studied columns: ' + str(_colType) + '\n' 
+                                  + str(dict_metrics[_met]))
+                        ax.plot(x_, y_, linewidth=2.0)
+                        fig.savefig(os.path.join(outputDir,str(dict_metrics[_met])+'.png'))
+                        plt.xlabel('Predicted Fault Location')
+                        plt.ylabel('Real Fault Location')
+                        #plt.show()
+                        plt.clf()
+                        plt.close()                          
+
+for model in allModels_met:
+    for dataInput in all_dataInput:
+        for _colType in all_Columns:
+            _data = data_Prediction [(data_Prediction["Model"]==model) & 
+                                (data_Prediction["data Input"]==dataInput) & 
+                                (data_Prediction["columns"]==_colType)]
+            if len(_data) > 0:
+                outputDir = os.path.join(os.path.join(os.path.join(os.getcwd(), str(model)), str(dataInput)),str(_colType))
+                isExist = os.path.exists(outputDir)
+                if not isExist:
+                    os.makedirs(outputDir)
+                for _n in range(10,20):
+                    _title_value = str(_n)+'_Value'
+                    _title_pred = str(_n)+'_Prediction'
+                    seaborn_elem = sns.scatterplot(data = _data[[_title_value,_title_pred]], 
+                                    x = _title_value, y=_title_pred )
+                    seaborn_elem.set_title("ScatterPlot - Cycle "+str(_n))
+                    seaborn_elem.set_title('Model: '+str(model)+'\n'
+                              + 'Data input: '+ str(dataInput) + '\n'
+                              + 'Studied columns: ' + str(_colType) + '\n' 
+                              + 'Cycle: ' + str(_n))
+                    
+                    plt.xlabel('Real Fault Location')
+                    plt.ylabel('Predicted Fault Location')
+                    fig = seaborn_elem.get_figure()
+                    fig.savefig(os.path.join(outputDir,'Cycle_' + str(_n)+'.png'))
+                    plt.clf()
+                    plt.close()                         
+                        
+                        
+for model in allModels_met:
+    for dataInput in all_dataInput:
+        for _colType in all_Columns:
+            _data = data_Prediction [(data_Prediction["Model"]==model) & 
+                                (data_Prediction["data Input"]==dataInput) & 
+                                (data_Prediction["columns"]==_colType)]
+            if len(_data) > 0:
+                outputDir = os.path.join(os.path.join(os.path.join(os.getcwd(), str(model)), str(dataInput)),str(_colType))
+                isExist = os.path.exists(outputDir)
+                if not isExist:
+                    os.makedirs(outputDir)
+                for _n in range(10,20):
+                    _title_value = str(_n)+'_Value'
+                    _title_pred = str(_n)+'_Error_abs'
+                    seaborn_elem = sns.scatterplot(data = _data[[_title_value,_title_pred]], 
+                                    x = _title_value, y=_title_pred )
+                    seaborn_elem.set_title("ScatterPlot - Cycle "+str(_n))
+                    seaborn_elem.set_title('Model: '+str(model)+'\n'
+                              + 'Data input: '+ str(dataInput) + '\n'
+                              + 'Studied columns: ' + str(_colType) + '\n' 
+                              + 'Cycle: ' + str(_n))
+                    
+                    plt.xlabel('Real Fault Location')
+                    plt.ylabel('Relative Error [%]')
+                    fig = seaborn_elem.get_figure()
+                    fig.savefig(os.path.join(outputDir,'Cycle_' + str(_n)+'.png'))
+                    plt.clf()
+                    plt.close() 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
